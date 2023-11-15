@@ -1,5 +1,5 @@
 import React from 'react';
-import { handleLogin } from './services/spotifyService';
+import { handleLogin } from '../service/spotifyService';
 
 const Login = () => {
   return (
