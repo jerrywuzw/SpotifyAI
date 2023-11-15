@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import TopTrack from './pages/TopTrack';
 import { useSpotifyAuth } from './components/SpotifyAuthContext';
+import Callback from './components/Callback';
 
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/top-tracks" element={<TopTrack accessToken={accessToken} />} />
+        <Route path="/callback" element={<Callback />} />
       </Routes>
     </Router>
   );

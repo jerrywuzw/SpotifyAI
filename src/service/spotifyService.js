@@ -1,18 +1,12 @@
-const SPOTIFY_AUTHORIZE_ENDPOINT = "https://accounts.spotify.com/authorize";
-const CLIENT_ID = process.env.REACT_APP_SPOTIFY_CLIENT_ID;
-const REDIRECT_URI = process.env.REACT_APP_SPOTIFY_REDIRECT_URI;
-const SCOPES = ["user-read-private", "user-read-email", "user-top-read"];
-
-export const getSpotifyAuthorizeURL = () => {
-  const url = new URL(SPOTIFY_AUTHORIZE_ENDPOINT);
-  url.searchParams.append('response_type', 'code');
-  url.searchParams.append('client_id', CLIENT_ID);
-  url.searchParams.append('scope', SCOPES.join(' '));
-  url.searchParams.append('redirect_uri', REDIRECT_URI);
-
-  return url.toString();
-};
-
-export const handleLogin = () => {
-  window.location = getSpotifyAuthorizeURL();
+export const handleLogin = async () => {
+  try {
+    // Update the URL to match your server's address and endpoint
+    // For development, it might be something like 'http://localhost:5000/api/spotify/spotify-auth-url'
+    const serverUrl = process.env.REACT_APP_SERVER_URL || 'http://localhost:5000';
+    const response = await fetch(`${serverUrl}/api/spotify/spotify-auth-url`);
+    const data = await response.json();
+    window.location.href = data.url; // Redirect the user to the Spotify login page
+  } catch (error) {
+    console.error('Error fetching Spotify auth URL:', error);
+  }
 };
