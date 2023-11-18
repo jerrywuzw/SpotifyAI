@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import TopTrack from './pages/TopTrack';
 import { useSpotifyAuth } from './components/SpotifyAuthContext';
 import Callback from './components/Callback';
+import Dashboard from './pages/Dashboard';
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/top-tracks" element={<TopTrack accessToken={accessToken} />} />
+        <Route path="/dashboard" element={<Dashboard accessToken={accessToken} />} />
         <Route path="/callback" element={<Callback />} />
       </Routes>
     </Router>

@@ -39,16 +39,18 @@ router.post('/exchange-code', async (req, res) => {
 
         const { access_token } = response.data;
 
-        // TODO: Store the access token in Firebase
-        // Placeholder for storing the access token in Firebase
-        // storeTokenInFirebase(access_token);
-
-        // Send a success response to the client
-        res.status(200).send('Token received and processed');
+        // Send the access token back to the client
+        res.json({ access_token: access_token });
     } catch (error) {
         console.error('Error exchanging code for token', error);
         res.status(500).send('Error exchanging code for token');
     }
 });
 
+
 module.exports = router;
+        // TODO: Store the access token in Firebase
+        // Placeholder for storing the access token in Firebase
+        // storeTokenInFirebase(access_token);
+
+        // Send a success response to the client

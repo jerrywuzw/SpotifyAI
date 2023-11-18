@@ -3,6 +3,7 @@ import axios from 'axios';
 const BASE_URL = 'https://api.spotify.com/v1';
 
 export const fetchUserTopTracks = async (accessToken) => {
+  console.log('Access Token in fetchUserTopTracks:', accessToken);
   try {
     const response = await axios.get(`${BASE_URL}/me/top/tracks`, {
       headers: {
