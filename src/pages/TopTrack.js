@@ -1,11 +1,11 @@
 import React from 'react';
 import TopTracks from '../components/TopTracks';
 
-const TopTrack = ({ accessToken }) => {
+const TopTrack = () => {
   return (
     <div>
       <h1>Top Tracks Page</h1>
-      <TopTracks accessToken={accessToken} />
+      <TopTracks />
     </div>
   );
 };

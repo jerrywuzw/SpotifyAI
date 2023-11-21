@@ -1,22 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { fetchUserTopTracks } from '../service/spotifyApi'; // Adjust the path as necessary
+import { getTopTracks } from '../service/spotifyService';
 
-const TopTracks = ({ accessToken }) => {
+const TopTracks = () => {
   const [tracks, setTracks] = useState([]);
 
   useEffect(() => {
-    console.log('Access Token in TopTracks:', accessToken); // Log the access token
-
-    const getTopTracks = async () => {
-      if (!accessToken) {
-        console.log('No access token available.');
-        return;
-      }
-
+    const fetchTopTracks = async () => {
       try {
-        const data = await fetchUserTopTracks(accessToken);
-        console.log('Fetched Top Tracks Data:', data); // Log the fetched data
-
+        const data = await getTopTracks();
         if (data && data.items) {
           setTracks(data.items);
         } else {
@@ -27,22 +18,22 @@ const TopTracks = ({ accessToken }) => {
       }
     };
 
-    getTopTracks();
-  }, [accessToken]);
+    fetchTopTracks();
+  }, []);
 
   return (
-    <div>
-      <h1>Your Top Tracks</h1>
-      {tracks.length > 0 ? (
-        <ul>
-          {tracks.map(track => (
-            <li key={track.id}>{track.name}</li>
-          ))}
-        </ul>
-      ) : (
-        <p>No top tracks to display.</p> // Fallback text if no tracks are available
-      )}
-    </div>
+      <div>
+        <h1>Your Top Tracks</h1>
+        {tracks.length > 0 ? (
+            <ul>
+              {tracks.map(track => (
+                  <li key={track.id}>{track.name}</li>
+              ))}
+            </ul>
+        ) : (
+            <p>No top tracks to display.</p>
+        )}
+      </div>
   );
 };
 

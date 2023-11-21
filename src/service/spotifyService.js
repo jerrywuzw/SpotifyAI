@@ -1,12 +1,22 @@
+import axios from 'axios';
+
+const BASE_URL = 'http://localhost:5000'; // Update with your server URL
+
 export const handleLogin = async () => {
   try {
-    // Update the URL to match your server's address and endpoint
-    // For development, it might be something like 'http://localhost:5000/api/spotify/spotify-auth-url'
-    const serverUrl = process.env.REACT_APP_SERVER_URL || 'http://localhost:5000';
-    const response = await fetch(`${serverUrl}/api/spotify/spotify-auth-url`);
-    const data = await response.json();
-    window.location.href = data.url; // Redirect the user to the Spotify login page
+    const response = await axios.get(`${BASE_URL}/api/spotify/spotify-auth-url`);
+    const data = response.data;
+    window.location.href = data.url;
   } catch (error) {
     console.error('Error fetching Spotify auth URL:', error);
+  }
+};
+
+export const getTopTracks = async () => {
+  try {
+    const response = await axios.get(`${BASE_URL}/api/spotify/top-tracks`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user's top tracks", error);
   }
 };
