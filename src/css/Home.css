@@ -1,0 +1,27 @@
+.home-container {
+    text-align: center; /* Center align the content */
+    padding: 20px;
+  }
+  
+  .spotify-login-btn {
+    background-color: green; /* Spotify green color */
+    color: black; /* Black text */
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .spotify-login-btn:hover {
+    background-color: #1db954; /* Slightly darker green on hover */
+  }
+  
+  .spotify-logo {
+    height: 24px; /* Adjust size as needed */
+    width: 24px; /* Adjust size as needed */
+  }
+  
