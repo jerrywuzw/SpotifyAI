@@ -1,0 +1,30 @@
+.track-card {
+    background: #fff; /* Card background */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+    border-radius: 8px; /* Rounded corners */
+    overflow: hidden; /* Ensures content respects border radius */
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px; /* Space between cards */
+  }
+  
+  .album-cover {
+    width: 100px;
+    height: 100px;
+    object-fit: cover; /* Keeps aspect ratio */
+  }
+  
+  .track-info {
+    padding: 10px;
+  }
+  
+  .track-title {
+    margin: 0;
+    color: #333; /* Title color */
+  }
+  
+  .artist-name {
+    margin: 0;
+    color: #666; /* Artist name color */
+  }
+  

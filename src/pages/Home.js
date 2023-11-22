@@ -8,7 +8,6 @@ import SpotifyLogo from '../logo/Spotify_icon.png'; // Make sure the path is cor
 const Home = () => {
   const navigate = useNavigate();
   const { accessToken } = useSpotifyAuth();
-  console.log('token', accessToken);
   const goToDashboard = () => {
     navigate('/dashboard');
   };

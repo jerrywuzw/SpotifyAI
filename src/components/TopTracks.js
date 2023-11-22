@@ -9,6 +9,7 @@ const TopTracks = () => {
     const fetchTopTracks = async () => {
       try {
         const data = await getTopTracks();
+        console.log(data);
         if (data && data.items) {
           setTracks(data.items);
         } else {
@@ -23,23 +24,11 @@ const TopTracks = () => {
   }, []);
 
   return (
-    <div className="top-tracks-container">
-      <h1 style={{ color: 'white' }}>Your Top Tracks</h1>
-      {tracks.length > 0 ? (
-        <div className="top-tracks">
-          {tracks.map(track => (
-            <div key={track.id} className="track">
-              <img src={track.album.images[1].url} alt={track.name} className="album-cover" />
-              <div className="track-info">
-                <p className="track-title">{track.name}</p>
-                <p className="artist-name">{track.artists.map(artist => artist.name).join(', ')}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <p>No top tracks to display.</p>
-      )}
+    <div>
+      <h1>Your Top Tracks</h1>
+      <div className="top-tracks">
+        {tracks.map(track => <TrackCard key={track.id} track={track} />)}
+      </div>
     </div>
   );
 };
