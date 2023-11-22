@@ -1,6 +1,11 @@
+
+body {
+  background-color: purple; /* Replace with your desired color */
+}
 .home-container {
     text-align: center; 
     padding: 20px;
+
   }
   
   .spotify-login-btn {
@@ -14,6 +19,7 @@
     display: inline-flex;
     align-items: center;
     gap: 10px;
+    margin-top: 20vh;
   }
   
   .spotify-login-btn:hover {
@@ -21,15 +27,15 @@
   }
   
   .spotify-logo {
-    height: 24px; 
-    width: 24px; 
+    height: 100px; 
+    width: 100px; 
   }
 
 
   .dashboard-btn {
 
   background-color: #004d40; /* Example color */
-  color: white;
+  color: rgb(72, 28, 28);
   padding: 10px 30px;
   border-radius: 20px;
   font-size: 16px;
