@@ -13,8 +13,10 @@ const Callback = () => {
       const response = await axios.post('http://localhost:5000/api/spotify/exchange-code', { code });
 
       if (response.status === 200 && response.data.access_token) {
-        setAccessToken(response.data.access_token); // Update the access token in context
-        navigate('/dashboard'); // Redirect to the Dashboard page
+        setAccessToken(response.data.access_token);
+        console.log('New Access Token:', response.data.access_token);
+
+        navigate('/dashboard'); 
       } else {
         console.error('Access token not received or invalid response');
         navigate('/'); // Redirect to home or an error page
