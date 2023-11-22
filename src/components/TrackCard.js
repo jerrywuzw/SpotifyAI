@@ -1,15 +1,33 @@
-import React from 'react';
-import '../css/TrackCard.css'; // Import the CSS for styling
+import React, { useEffect, useRef } from 'react';
+import '../css/TrackCard.css';
 
 const TrackCard = ({ track }) => {
+  const titleRef = useRef(null);
+  const spanRef = useRef(null); 
+
+  useEffect(() => {
+    if (titleRef.current && spanRef.current) {
+      const titleWidth = titleRef.current.offsetWidth;
+      const spanWidth = spanRef.current.offsetWidth;
+
+      if (spanWidth > titleWidth) {
+        spanRef.current.classList.add('scrolling');
+      }
+    }
+  }, []);
+
   return (
-    <div className="track-card">
-      <img src={track.album.images[1].url} alt={track.name} className="album-cover" />
-      <div className="track-info">
-        <h3 className="track-title">{track.name}</h3>
-        <p className="artist-name">{track.artists.map(artist => artist.name).join(', ')}</p>
+    <a href={track.external_urls.spotify} target="_blank" rel="noopener noreferrer" className="track-card-link">
+      <div className="track-card">
+        <img src={track.album.images[1].url} alt={track.name} className="album-cover" />
+        <div className="track-info">
+          <div className="track-title" ref={titleRef}>
+            <span ref={spanRef}>{track.name}</span>
+          </div>
+          <p className="artist-name">{track.artists.map(artist => artist.name).join(', ')}</p>
+        </div>
       </div>
-    </div>
+    </a>
   );
 };
 

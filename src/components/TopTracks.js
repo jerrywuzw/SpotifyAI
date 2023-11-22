@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getTopTracks } from '../service/spotifyService';
-import '../css/TopTracks.css'; // Import the CSS file for styling
+import TrackCard from './TrackCard';
+import '../css/TopTracks.css';
 
 const TopTracks = () => {
   const [tracks, setTracks] = useState([]);

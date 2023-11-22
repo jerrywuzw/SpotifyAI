@@ -4,21 +4,17 @@
   
   .top-tracks {
     display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
+    flex-wrap: wrap;
+    justify-content: center; /* This centers the cards in the container */
+    gap: 20px; /* This adds some space between the cards */
+}
   
   .track {
     display: flex;
     align-items: center;
     gap: 10px;
   }
-  
-  .album-cover {
-    width: 100px; /* Adjust as needed */
-    height: 100px; /* Adjust as needed */
-    object-fit: cover;
-  }
+
   
   .track-info {
     display: flex;

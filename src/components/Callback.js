@@ -14,7 +14,6 @@ const Callback = () => {
 
       if (response.status === 200 && response.data.access_token) {
         setAccessToken(response.data.access_token);
-        console.log('New Access Token:', response.data.access_token);
 
         navigate('/dashboard'); 
       } else {
