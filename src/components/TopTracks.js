@@ -26,9 +26,13 @@ const TopTracks = () => {
 
   return (
     <div>
-      <h1>Your Top Tracks</h1>
+      <h1 className="header-title">Your Top Tracks</h1>
       <div className="top-tracks">
-        {tracks.map(track => <TrackCard key={track.id} track={track} />)}
+        {tracks.map(track => <TrackCard 
+        key={track.id} 
+        track={track} 
+        style={{ animationDelay: `${Math.random() * 2}s` }}
+        />)}
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import '../css/TrackCard.css';
 
-const TrackCard = ({ track }) => {
+const TrackCard = ({ track, style }) => {
   const titleRef = useRef(null);
   const spanRef = useRef(null); 
 
@@ -18,7 +18,7 @@ const TrackCard = ({ track }) => {
 
   return (
     <a href={track.external_urls.spotify} target="_blank" rel="noopener noreferrer" className="track-card-link">
-      <div className="track-card">
+      <div className="track-card" style={style}>
         <img src={track.album.images[1].url} alt={track.name} className="album-cover" />
         <div className="track-info">
           <div className="track-title" ref={titleRef}>

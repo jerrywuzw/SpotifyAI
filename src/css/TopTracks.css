@@ -1,6 +1,28 @@
 .top-tracks-container {
     color: white; /* Make all text white */
   }
+  @keyframes titleEntrance {
+    0% {
+      transform: scale(0.8) rotate(-10deg);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.1) rotate(5deg);
+      opacity: 0.5;
+    }
+    100% {
+      transform: scale(1) rotate(0deg);
+      opacity: 1;
+    }
+  }
+  
+
+  .header-title {
+    text-align: center; /* Centers the text horizontally */
+    color: white; /* Sets the text color to white */
+    animation: titleEntrance 1.5s ease-out;
+  }
+  
   
   .top-tracks {
     display: flex;
