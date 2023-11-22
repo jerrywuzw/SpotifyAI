@@ -1,14 +1,14 @@
 .home-container {
-    text-align: center; /* Center align the content */
+    text-align: center; 
     padding: 20px;
   }
   
   .spotify-login-btn {
-    background-color: green; /* Spotify green color */
-    color: black; /* Black text */
+    background-color: rgb(22, 182, 22); 
+    color: rgb(251, 251, 251); 
     border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
+    padding: 10px 50px; 
+    border-radius: 20px; 
     font-size: 16px;
     cursor: pointer;
     display: inline-flex;
@@ -17,11 +17,26 @@
   }
   
   .spotify-login-btn:hover {
-    background-color: #1db954; /* Slightly darker green on hover */
+    background-color: #1db954;
   }
   
   .spotify-logo {
-    height: 24px; /* Adjust size as needed */
-    width: 24px; /* Adjust size as needed */
+    height: 24px; 
+    width: 24px; 
   }
-  
+
+
+  .dashboard-btn {
+
+  background-color: #004d40; /* Example color */
+  color: white;
+  padding: 10px 30px;
+  border-radius: 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+}
+
+.dashboard-btn:hover {
+  background-color: #00332a; /* Darker color on hover */
+}
