@@ -14,7 +14,7 @@ const Home = () => {
 
   return (
     <div className="home-container">
-      <h1 style={{ color: 'white', fontSize: '80px' }}>Welcome to your Spotify data dashboard!</h1>
+      <h1 style={{ color: 'white', fontSize: '80px' }}>Welcome to Spotify AI</h1>
       {!accessToken ? (
         <button onClick={handleLogin} className="spotify-login-btn">
           <img src={SpotifyLogo} alt="Spotify" className="spotify-logo" /> 
