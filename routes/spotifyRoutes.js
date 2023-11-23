@@ -94,7 +94,8 @@ router.post('/exchange-code', async (req, res) => {
         console.log('New Refresh Token:', refreshToken); // Log the new refresh token
 
         // Send a success response to the client
-        res.status(200).send('Token received and processed');
+        res.json({ access_token: accessToken, refresh_token: refreshToken });
+        //<<----------changed the send 200 here
     } catch (error) {
         console.error('Error exchanging code for token', error);
         res.status(500).send('Error exchanging code for token');

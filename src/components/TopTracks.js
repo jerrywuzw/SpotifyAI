@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getTopTracks } from '../service/spotifyService';
+import TrackCard from './TrackCard';
+import '../css/TopTracks.css';
 
 const TopTracks = () => {
   const [tracks, setTracks] = useState([]);
@@ -8,6 +10,7 @@ const TopTracks = () => {
     const fetchTopTracks = async () => {
       try {
         const data = await getTopTracks();
+        console.log(data);
         if (data && data.items) {
           setTracks(data.items);
         } else {
@@ -22,18 +25,16 @@ const TopTracks = () => {
   }, []);
 
   return (
-      <div>
-        <h1>Your Top Tracks</h1>
-        {tracks.length > 0 ? (
-            <ul>
-              {tracks.map(track => (
-                  <li key={track.id}>{track.name}</li>
-              ))}
-            </ul>
-        ) : (
-            <p>No top tracks to display.</p>
-        )}
+    <div>
+      <h1 className="header-title">Your Top Tracks</h1>
+      <div className="top-tracks">
+        {tracks.map(track => <TrackCard 
+        key={track.id} 
+        track={track} 
+        style={{ animationDelay: `${Math.random() * 2}s` }}
+        />)}
       </div>
+    </div>
   );
 };
 

@@ -8,7 +8,6 @@ export const SpotifyAuthProvider = ({ children }) => {
   const [accessToken, setAccessToken] = useState(null);
 
   useEffect(() => {
-    console.log('Access Token Updated:', accessToken);
   }, [accessToken]);
   return (
     <SpotifyAuthContext.Provider value={{ accessToken, setAccessToken }}>
