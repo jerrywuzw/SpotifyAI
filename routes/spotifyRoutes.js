@@ -121,6 +121,36 @@ router.get('/top-tracks', async (req, res) => {
     }
 });
 
+// Additional endpoint for search
+router.get('/search', async (req, res) => {
+    const searchTerm = req.query.term; // Get the search term from the query parameter
+
+    if (!searchTerm) {
+        return res.status(400).send('Search term is required');
+    }
+
+    try {
+        await ensureTokenValidity(); // Ensure the token is valid before making the request
+
+        const response = await axios.get(`https://api.spotify.com/v1/search`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            },
+            params: {
+                q: searchTerm,
+                type: 'track', // You can adjust this to search for artists, albums, etc.
+                limit: 10  // Adjust the number of results as needed
+            }
+        });
+
+        res.json(response.data);
+    } catch (error) {
+        console.error('Error during search:', error);
+        res.status(500).send('Error during search');
+    }
+});
+
+
 
 
 module.exports = router;
