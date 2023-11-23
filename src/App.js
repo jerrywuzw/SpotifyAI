@@ -4,12 +4,14 @@ import Home from './pages/Home';
 import TopTrack from './pages/TopTrack';
 import Callback from './components/Callback';
 import Dashboard from './pages/Dashboard';
+import Navbar from './components/nav/Navbar';
 
 
 function App() {
 
   return (
     <Router>
+      <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/top-tracks" element={<TopTrack />} />
