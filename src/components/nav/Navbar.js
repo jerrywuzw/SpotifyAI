@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './css/Navbar.css'; 
+import SearchBar from './SearchBar';
 
 const Navbar = () => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -9,12 +10,17 @@ const Navbar = () => {
 
     return (
         <nav className="navbar">
+          <div className='search-bar'>
+          <SearchBar /> {/* Move SearchBar to the first position */}
+            </div>
           <div className="hamburger-menu" onClick={toggleDropdown}>
             <div className="line"></div>
             <div className="line"></div>
             <div className="line"></div>
           </div>
+
           <div className="navbar-brand">Spotify AI</div>
+
           <div className={`dropdown ${dropdownOpen ? 'dropdown-open' : ''}`}>
             <ul className="nav-links">
               <li><Link to="/" onClick={() => setDropdownOpen(false)}>Home</Link></li>

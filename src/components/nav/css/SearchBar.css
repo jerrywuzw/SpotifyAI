@@ -7,7 +7,10 @@
     max-height: 300px;
     overflow-y: auto;
     z-index: 1000;
+    top: 100%; /* Adjust this line to position below the search bar */
+    left: 0; /* Aligns to the left edge of the search container */
   }
+  
   
   .search-dropdown li {
     padding: 8px 12px;
@@ -18,3 +21,29 @@
     background-color: #f0f0f0;
   }
   
+
+  .search-container {
+    position: relative; /* Add this line */
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 20px;
+    padding: 5px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  
+  .search-icon {
+    color: #333;
+    margin-left: 10px;
+  }
+  
+  .search-input {
+    width: 100%; /* Adjust width as needed */
+    box-shadow: none; /* Removes any box shadow */
+  }
+  
+  /* Style adjustments for the search input focus state */
+  .search-input:focus {
+    box-shadow: 0px 0px 2px #1db954; /* Optional: Adds a shadow on focus */
+  }

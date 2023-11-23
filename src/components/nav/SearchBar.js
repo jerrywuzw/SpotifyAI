@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './css/SearchBar.css';
+import { FaSearch } from 'react-icons/fa';
 
 const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -28,7 +29,8 @@ const SearchBar = () => {
   }, [searchTerm]);
 
   return (
-    <div>
+    <div className="search-container">
+            <FaSearch className="search-icon" />
       <input
         type="text"
         placeholder="Search music..."
