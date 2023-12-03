@@ -1,0 +1,29 @@
+.mbti-container {
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .mbti-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .mbti-card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  
+  .mbti-card:hover {
+    transform: scale(1.05);
+  }
+  
+  .mbti-card.selected {
+    border-color: #1db954;
+  }
+  

@@ -5,6 +5,7 @@ import TopTrack from './pages/TopTrack';
 import Callback from './components/Callback';
 import Dashboard from './pages/Dashboard';
 import Navbar from './components/nav/Navbar';
+import MBTI from './pages/MBTI';
 
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
         <Route path="/top-tracks" element={<TopTrack />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/callback" element={<Callback />} />
+        <Route path="/mbti" element={<MBTI />} />
       </Routes>
     </Router>
   );
