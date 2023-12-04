@@ -1,0 +1,7 @@
+{
+  "spotify": {
+    "client_secret": "03ae73b4fd454390a488db8232864a3c",
+    "client_id": "a307f6b0be55450cbdd16b0e29d8716f",
+    "redirect_uri": "http://localhost:3000/callback"
+  }
+}
