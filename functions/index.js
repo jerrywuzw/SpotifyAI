@@ -1,166 +1,267 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const axios = require("axios");
+const cors = require("cors")({origin: true});
+
+// ==============
+// Initialization
+// ==============
 admin.initializeApp();
+const db = admin.firestore();
 
-
-// Spotify OAuth configuration
+// ===========================
+// Spotify OAuth Configuration
+// ===========================
 const CLIENT_ID = functions.config().spotify.client_id;
 const CLIENT_SECRET = functions.config().spotify.client_secret;
+const REDIRECT_URI = functions.config().spotify.redirect_uri;
 const SPOTIFY_TOKEN_ENDPOINT = "https://accounts.spotify.com/api/token";
 const SPOTIFY_TOP_TRACKS_ENDPOINT = "https://api.spotify.com/v1/me/top/tracks";
+const SPOTIFY_USER_PROFILE_ENDPOINT = "https://api.spotify.com/v1/me";
 
+// ================
+// Helper Functions
+// ================
+/**
+ * Helper function to fetch Spotify username.
+ * @param {String} accessToken
+ * @return {Promise<*>}
+ */
+async function fetchSpotifyUserProfile(accessToken) {
+  try {
+    const userProfileResponse = await axios.get(SPOTIFY_USER_PROFILE_ENDPOINT, {
+      headers: {
+        "Authorization": `Bearer ${accessToken}`,
+      },
+    });
 
-// Refresh the user's Spotify access token
-async function refreshSpotifyToken(uid) {
-  // Fetch the refresh token from Firestore
-  const tokenDoc = await admin.firestore()
-      .collection("spotifyTokens")
-      .doc(uid)
-      .get();
-
-  if (!tokenDoc.exists) {
-    throw new functions.https.HttpsError(
-        "not-found",
-        "Refresh token not found.",
-    );
+    const userData = userProfileResponse.data;
+    return {
+      id: userData.id, // Spotify username
+      email: userData.email, // Spotify email
+    };
+  } catch (error) {
+    console.error("Error fetching Spotify user profile:", error);
+    throw error;
   }
-
-  const {refreshToken} = tokenDoc.data();
-  const basicAuthHeader = Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString("base64");
-
-  // Request a new access token using the refresh token
-  const response = await axios.post(
-      SPOTIFY_TOKEN_ENDPOINT,
-      new URLSearchParams({
-        grant_type: "refresh_token",
-        refresh_token: refreshToken,
-      }), {
-        headers: {
-          "Authorization": `Basic ${basicAuthHeader}`,
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-      });
-
-  const {access_token: newAccessToken} = response.data;
-
-  // Update the access token in Firestore
-  await admin.firestore()
-      .collection("spotifyTokens")
-      .doc(uid)
-      .update({accessToken: newAccessToken});
-
-  return newAccessToken;
 }
 
-
-// Create a user record in Firestore when a new user account is created
-exports.createUserRecord = functions.auth.user().onCreate(async (user) => {
-  const {uid, email, displayName} = user;
-  const newUserRecord = {
-    uid,
-    email: email || "",
-    displayName: displayName || "",
-  };
-
-  await admin.firestore().collection("users").doc(uid).set(newUserRecord);
-
-  return null;
-});
-
-// Exchange a Spotify authorization code for an access token and refresh token
-exports.exchangeSpotifyCode = functions.https.onCall(async (data, context) => {
-  // Ensure the user is authenticated
-  if (!context.auth) {
-    throw new functions.https.HttpsError(
-        "unauthenticated",
-        "The function must be called while authenticated.",
-    );
-  }
-
-  const {code} = data;
-  const basicAuthHeader = Buffer.from(
-      `${CLIENT_ID}:${CLIENT_SECRET}`,
-  ).toString("base64");
-
+/**
+ * Helper function to fetch Spotify tokens.
+ * @param {String} authCode
+ * @return {Promise<any>}
+ */
+async function fetchSpotifyTokens(authCode) {
   try {
-    const response = await axios.post(
+    const tokenResponse = await axios.post(
         SPOTIFY_TOKEN_ENDPOINT,
         new URLSearchParams({
           grant_type: "authorization_code",
-          code: code,
-          redirect_uri: "YOUR_SPOTIFY_REDIRECT_URI",
+          code: authCode,
+          redirect_uri: REDIRECT_URI,
+          client_id: CLIENT_ID,
+          client_secret: CLIENT_SECRET,
         }), {
           headers: {
-            "Authorization": `Basic ${basicAuthHeader}`,
             "Content-Type": "application/x-www-form-urlencoded",
+          },
+        },
+    );
+
+    return tokenResponse.data;
+  } catch (error) {
+    console.error("Error fetching Spotify tokens:", error);
+    throw error; // Re-throw the error to handle it in the calling function
+  }
+}
+
+/**
+ * Helper function to store Spotify tokens in Firestore
+ * @param {String} userId
+ * @param {Object} tokens
+ * @return {Promise<void>}
+ */
+async function storeSpotifyTokens(userId, tokens) {
+  const userRef = db.collection("users").doc(userId);
+  await userRef.set({
+    spotifyAccessToken: tokens.access_token,
+    spotifyRefreshToken: tokens.refresh_token,
+    accessTokenExpiry: admin.firestore.Timestamp.fromDate(
+        new Date(Date.now() + tokens.expires_in * 1000)),
+  }, {merge: true});
+}
+
+/**
+ * Helper function to create or retrieve a Firebase user
+ * @param {String} userId
+ * @param {String} email
+ * @return {Promise<Object>}
+ */
+async function createOrRetrieveFirebaseUser(userId, email) {
+  try {
+    // Try to retrieve the existing user
+    return await admin.auth().getUser(userId);
+  } catch (error) {
+    if (error.code === "auth/user-not-found") {
+      // User does not exist, create a new user
+      return await admin.auth().createUser({
+        uid: userId,
+        email: email,
+      });
+    } else {
+      // Some other error occurred
+      throw error;
+    }
+  }
+}
+
+/**
+ * Helper to ensure the Spotify access token is valid
+ * @param {String} userId
+ * @return {Promise<String>}
+ */
+async function ensureValidSpotifyAccessToken(userId) {
+  const userRef = db.collection("users").doc(userId);
+  const userDoc = await userRef.get();
+  const userData = userDoc.data();
+
+  let accessToken = userData.spotifyAccessToken;
+  const refreshToken = userData.spotifyRefreshToken;
+  const accessTokenExpiry = userData.accessTokenExpiry.toDate();
+
+  // Check if the current access token has expired
+  if (accessTokenExpiry <= new Date()) {
+    console.log(`Access token expired for user ${userId}, refreshing token...`);
+
+    // Refresh the token
+    const refreshedTokenData = await refreshSpotifyToken(refreshToken);
+    accessToken = refreshedTokenData.access_token;
+    console.log(`Access token refreshed for user ${userId}`);
+
+    // Update the access token and its new expiry time in Firestore
+    await userRef.set({
+      spotifyAccessToken: accessToken,
+      accessTokenExpiry: admin.firestore.Timestamp.fromDate(
+          new Date(Date.now() + refreshedTokenData.expires_in * 1000)),
+    }, {merge: true});
+  }
+
+  return accessToken;
+}
+
+/**
+ * Helper function to fetch Spotify top tracks.
+ * @param {String} refreshToken
+ * @return {Promise<any>}
+ */
+async function refreshSpotifyToken(refreshToken) {
+  const authHeader = "Basic " + Buffer.from(
+      CLIENT_ID + ":" + CLIENT_SECRET).toString("base64");
+
+  try {
+    const response = await axios.post(
+        SPOTIFY_TOKEN_ENDPOINT, new URLSearchParams({
+          grant_type: "refresh_token",
+          refresh_token: refreshToken,
+        }).toString(), {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Authorization": authHeader,
           },
         });
 
-    const {accessToken, refreshToken} = response.data;
-
-    // Store the tokens in Firestore against the user's UID
-    await admin.firestore()
-        .collection("spotifyTokens")
-        .doc(context.auth.uid)
-        .set({
-          accessToken: accessToken,
-          refreshToken: refreshToken,
-        });
-
-    return {status: "success"};
+    return response.data; // The refreshed token data
   } catch (error) {
-    console.error("Error exchanging Spotify code:", error);
-    throw new functions.https.HttpsError(
-        "internal",
-        "Error exchanging Spotify code",
-    );
+    console.error("Error refreshing Spotify token:", error);
+    throw error;
   }
+}
+
+/**
+ * Helper function to fetch Spotify top tracks.
+ * @param {String} accessToken
+ * @return {Promise<any>}
+ */
+async function fetchSpotifyTopTracks(accessToken) {
+  try {
+    const response = await axios.get(SPOTIFY_TOP_TRACKS_ENDPOINT, {
+      headers: {
+        "Authorization": `Bearer ${accessToken}`,
+      },
+    });
+
+    return response.data; // The user's top tracks
+  } catch (error) {
+    console.error("Error fetching Spotify top tracks:", error);
+    throw error;
+  }
+}
+
+// ==================
+// Firebase Functions
+// ==================
+// Exchange a Spotify auth code for tokens
+exports.exchangeSpotifyCode = functions.https.onRequest((request, response) => {
+  cors(request, response, async () => {
+    if (request.method !== "POST") {
+      return response.status(405).send("Method Not Allowed");
+    }
+
+    const authCode = request.body.code;
+    if (authCode) {
+      try {
+        const tokens = await fetchSpotifyTokens(authCode);
+        console.log("Successfully fetched tokens:", tokens);
+
+        const userProfile = await fetchSpotifyUserProfile(tokens.access_token);
+        console.log("Successfully fetched user profile:", userProfile);
+
+        const userRecord = await createOrRetrieveFirebaseUser(
+            userProfile.id, userProfile.email);
+        console.log("Successfully processed Firebase user:", userRecord.uid);
+
+        // Store Spotify tokens using the helper function
+        await storeSpotifyTokens(userRecord.uid, tokens);
+        console.log("Successfully stored tokens for user:", userRecord.uid);
+
+        // Create a Firebase custom token
+        const customToken = await admin.auth()
+            .createCustomToken(userRecord.uid);
+        console.log("Successfully created custom token:", customToken);
+
+        response.status(200).send(customToken);
+      } catch (error) {
+        console.error("Error exchanging auth code for tokens:", error);
+        response.status(500).send("Failed to exchange auth code for tokens");
+      }
+    } else {
+      response.status(400).send("No auth code provided");
+    }
+  });
 });
 
 // Get the user's top tracks from Spotify
 exports.getTopTracks = functions.https.onCall(async (data, context) => {
-  // Ensure the user is authenticated
   if (!context.auth) {
     throw new functions.https.HttpsError(
-        "unauthenticated",
-        "The function must be called while authenticated.",
-    );
+        "unauthenticated", "The function must be called while authenticated.");
   }
+
+  console.log(`getTopTracks function invoked by user: ${context.auth.uid}`);
 
   try {
-    const uid = context.auth.uid;
-    let {accessToken} = (await admin.firestore()
-        .collection("spotifyTokens")
-        .doc(uid)
-        .get()).data();
+    const accessToken = await ensureValidSpotifyAccessToken(context.auth.uid);
+    console.log(`Access token for user ${context.auth.uid} is valid`);
 
-    // Attempt to fetch top tracks with current access token
-    try {
-      const response = await axios.get(SPOTIFY_TOP_TRACKS_ENDPOINT, {
-        headers: {"Authorization": `Bearer ${accessToken}`},
-      });
-      return response.data;
-    } catch (error) {
-      if (error.response && error.response.status === 401) {
-        // Token might be expired, try refreshing it
-        accessToken = await refreshSpotifyToken(uid);
+    const topTracks = await fetchSpotifyTopTracks(accessToken);
+    console.log(`Successfully fetched ${topTracks.items.length} top tracks`);
 
-        // Retry the request with the new access token
-        const response = await axios.get(SPOTIFY_TOP_TRACKS_ENDPOINT, {
-          headers: {"Authorization": `Bearer ${accessToken}`},
-        });
-        return response.data;
-      } else {
-        throw error;
-      }
-    }
+    return {message: "Top tracks fetched successfully", topTracks};
   } catch (error) {
-    console.error("Error fetching top tracks:", error);
+    console.error("Error in getTopTracks function:", error);
     throw new functions.https.HttpsError(
-        "internal",
-        "Error fetching top tracks",
-    );
+        "internal", "Error fetching top tracks.");
   }
 });
+
 

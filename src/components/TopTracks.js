@@ -11,8 +11,8 @@ const TopTracks = () => {
       try {
         const data = await getTopTracks();
         console.log(data);
-        if (data && data.items) {
-          setTracks(data.items);
+        if (data && data.topTracks.items) {
+          setTracks(data.topTracks.items);
         } else {
           console.log('No items found in response:', data);
         }
@@ -28,9 +28,9 @@ const TopTracks = () => {
     <div>
       <h1 className="header-title">Your Top Tracks</h1>
       <div className="top-tracks">
-        {tracks.map(track => <TrackCard 
-        key={track.id} 
-        track={track} 
+        {tracks.map(track => <TrackCard
+        key={track.id}
+        track={track}
         style={{ animationDelay: `${Math.random() * 2}s` }}
         />)}
       </div>

@@ -1,49 +1,49 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { useSpotifyAuth } from './SpotifyAuthContext'; // Adjust the import path
+import { signInWithCustomToken } from 'firebase/auth';
+import { auth } from '../firebase';
 
 const Callback = () => {
-  const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(true);
-  const { setAccessToken } = useSpotifyAuth(); // Use the hook to access setAccessToken
+    const navigate = useNavigate();
+    const functionUrl = 'https://us-central1-spotifyai-374f6.cloudfunctions.net/exchangeSpotifyCode';
 
-  const sendCodeToServer = useCallback(async (code) => {
-    try {
-      const response = await axios.post('http://localhost:5000/api/spotify/exchange-code', { code });
+    const authenticateWithFirebase = (customToken) => {
+        signInWithCustomToken(auth, customToken)
+            .then(() => {
+                navigate('/dashboard');
+            })
+            .catch((error) => {
+                console.error('Firebase authentication error:', error);
+                navigate('/');
+            });
+    };
 
-      if (response.status === 200 && response.data.access_token) {
-        setAccessToken(response.data.access_token);
+    const exchangeCodeForToken = (code) => {
+        axios.post(functionUrl, { code })
+            .then(response => {
+                console.log('Custom token received');
+                authenticateWithFirebase(response.data);
+            })
+            .catch(error => {
+                console.error('Error exchanging code for token:', error);
+                navigate('/');
+            });
+    };
 
-        navigate('/dashboard'); 
-      } else {
-        console.error('Access token not received or invalid response');
-        navigate('/'); // Redirect to home or an error page
-      }
-    } catch (error) {
-      console.error('Error sending code to server', error);
-      navigate('/'); // Redirect to home or an error page on error
-    } finally {
-      setIsLoading(false);
-    }
-  }, [navigate, setAccessToken]);
+    useEffect(() => {
+        const queryParams = new URLSearchParams(window.location.search);
+        const code = queryParams.get('code');
 
-  useEffect(() => {
-    const code = new URLSearchParams(window.location.search).get('code');
-    if (code) {
-      sendCodeToServer(code);
-    } else {
-      // Handle case where code is not present in URL
-      console.error('Authorization code not found in URL');
-      navigate('/');
-    }
-  }, [sendCodeToServer, navigate]);
+        if (code) {
+            exchangeCodeForToken(code);
+        } else {
+            console.error('Authorization code not found in URL');
+            navigate('/');
+        }
+    }, [navigate]);
 
-  if (isLoading) {
     return <div>Loading...</div>;
-  }
-
-  return null;
 };
 
 export default Callback;
