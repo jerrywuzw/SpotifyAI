@@ -1,0 +1,15 @@
+.playlist {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .track-item {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .track-name {
+    /* Add styles for the track name */
+  }
+  

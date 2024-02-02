@@ -15,6 +15,7 @@ function App() {
         <Route path="/top-tracks" element={<TopTrack />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/callback" element={<Callback />} />
+        <Route path="/playlist" element={<Playlist />} />
       </Routes>
     </Router>
   );
