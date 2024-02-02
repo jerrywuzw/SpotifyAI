@@ -1,15 +1,41 @@
 .playlist {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .track-item {
-    margin-bottom: 10px;
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
-  }
-  
-  .track-name {
-    /* Add styles for the track name */
-  }
-  
+  list-style-type: none;
+  padding: 0;
+  margin: 10vw; /* Adds padding on both sides */
+}
+
+.track-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Distributes space between elements */
+  margin-bottom: 0; /* Removes space between items */
+  padding: 10px;
+}
+
+.album-cover {
+  width: 120px; /* Increased width */
+  height: 120px; /* Increased height */
+  margin-right: 10px;
+  border-radius: 4px;
+  padding-left: 1vw;
+}
+
+.track-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Centers text vertically */
+  align-items: center; /* Centers text horizontally */
+  flex-grow: 1; /* Allows the track info to take up available space */
+  color: white;
+  padding-left: 1vw; /* Optional, adds a bit of space after the album cover */
+}
+
+.track-name {
+  font-weight: bold;
+  font-size: 5em; /* Larger font size for track name */
+}
+
+.track-artist {
+  font-style: italic;
+  font-size: 0.8em; /* Smaller font size for artist name */
+}
