@@ -31,10 +31,22 @@ export const getTopTracks = async () => {
   try {
     const result = await getTopTracksFunction();
     console.log('Result from getTopTracks Firebase function:', result);
-
     return result.data; // The data returned from your Firebase function
   } catch (error) {
     console.error('Error calling getTopTracks Firebase function:', error);
     throw error;
   }
 };
+
+export const getRecommendations = async () => {
+  const getRecommendationsFunction = httpsCallable(getFunctions(), 'getRecommendations');
+  try {
+    const result = await getRecommendationsFunction();
+    console.log('Result from getRecommendations Firebase function:', result);
+    return result.data;
+  } catch (error) {
+    console.error('Error calling getRecommendations Firebase function:', error);
+    throw error;
+  }
+};
+

@@ -1,0 +1,112 @@
+/* Default styles for desktop */
+.header-title {
+  font-size: 96px;
+}
+
+.playlist {
+  list-style-type: none;
+  padding: 0;
+  margin: 15vw; /* Adds padding on both sides */
+}
+
+.track-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0;
+  padding: 10px;
+}
+
+.album-cover {
+  width: 180px;
+  height: 180px;
+  margin-right: 10px;
+  border-radius: 4px;
+  padding-left: 1vw;
+}
+
+.track-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  color: white;
+  padding-left: 1vw;
+  overflow: hidden; /* Ensures scrolling text stays within this container */
+}
+
+.track-name {
+  font-weight: bold;
+  font-size: 4em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip; /* Prevents text from spilling over */
+  text-align: center; /* Centers the text */
+  padding: 0 10px; /* Adds padding on both sides */
+}
+
+.track-name span {
+  display: inline-block;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.scrolling {
+  animation: scroll-title 20s linear infinite;
+}
+
+@keyframes scroll-title {
+  0%, 100% { transform: translateX(0%); }
+  50% { transform: translateX(-50%); }
+}
+
+.track-artist {
+  font-style: italic;
+  font-size: 2em;
+}
+
+.play-icon {
+  width: 0;
+  height: 0;
+  border-top: 30px solid transparent;  /* Increased height of the triangle */
+  border-bottom: 30px solid transparent;  /* Increased height of the triangle */
+  border-left: 60px solid white;  /* Increased width of the triangle */
+  cursor: pointer;
+  align-self: center;
+  margin-left: auto;
+  margin-right: 2vw;
+}
+
+/* Media query for mobile devices */
+@media (max-width: 768px) {
+  .header-title {
+    font-size: 48px; /* Adjust font size for mobile */
+  }
+
+  .playlist {
+    margin: 5vw; /* Adjust margin for mobile */
+  }
+
+  .album-cover {
+    width: 100px; /* Adjust album cover size for mobile */
+    height: 100px; /* Adjust album cover size for mobile */
+    margin-right: 5px; /* Adjust margin for mobile */
+  }
+
+  .track-name {
+    font-size: 2em; /* Adjust font size for mobile */
+  }
+
+  .track-artist {
+    font-size: 1em; /* Adjust font size for mobile */
+  }
+
+  .play-icon {
+    border-top: 15px solid transparent;  /* Adjust triangle size for mobile */
+    border-bottom: 15px solid transparent;  /* Adjust triangle size for mobile */
+    border-left: 30px solid white;  /* Adjust triangle size for mobile */
+    margin-right: 1vw; /* Adjust margin for mobile */
+  }
+}
