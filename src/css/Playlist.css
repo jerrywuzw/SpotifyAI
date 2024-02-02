@@ -1,3 +1,4 @@
+/* Default styles for desktop */
 .header-title {
   font-size: 96px;
 }
@@ -78,3 +79,34 @@
   margin-right: 2vw;
 }
 
+/* Media query for mobile devices */
+@media (max-width: 768px) {
+  .header-title {
+    font-size: 48px; /* Adjust font size for mobile */
+  }
+
+  .playlist {
+    margin: 5vw; /* Adjust margin for mobile */
+  }
+
+  .album-cover {
+    width: 100px; /* Adjust album cover size for mobile */
+    height: 100px; /* Adjust album cover size for mobile */
+    margin-right: 5px; /* Adjust margin for mobile */
+  }
+
+  .track-name {
+    font-size: 2em; /* Adjust font size for mobile */
+  }
+
+  .track-artist {
+    font-size: 1em; /* Adjust font size for mobile */
+  }
+
+  .play-icon {
+    border-top: 15px solid transparent;  /* Adjust triangle size for mobile */
+    border-bottom: 15px solid transparent;  /* Adjust triangle size for mobile */
+    border-left: 30px solid white;  /* Adjust triangle size for mobile */
+    margin-right: 1vw; /* Adjust margin for mobile */
+  }
+}
