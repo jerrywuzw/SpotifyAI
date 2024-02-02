@@ -202,9 +202,10 @@ async function fetchSpotifyTopTracks(accessToken) {
  * Helper function to fetch Spotify recommendations.
  * @param {String} accessToken
  * @param {Array<String>} trackIds
+ * @param {Number} medianTempo
  * @return {Promise<any>}
  */
-async function fetchSpotifyRecommendations(accessToken, trackIds) {
+async function fetchSpotifyRecommendations(accessToken, trackIds, medianTempo) {
   try {
     const response = await axios.get(SPOTIFY_RECOMMENDATIONS_ENDPOINT, {
       headers: {
@@ -212,7 +213,8 @@ async function fetchSpotifyRecommendations(accessToken, trackIds) {
       },
       params: {
         seed_tracks: trackIds.join(","),
-        limit: 20, // You can adjust the limit as needed
+        limit: 20,
+        target_tempo: medianTempo,
       },
     });
 
@@ -220,6 +222,23 @@ async function fetchSpotifyRecommendations(accessToken, trackIds) {
   } catch (error) {
     console.error("Error fetching Spotify recommendations:", error);
     throw error;
+  }
+}
+
+/**
+ * Helper function to find the median of a sorted array.
+ * @param {Array<Number>} sortedArray
+ * @return {*|number}
+ */
+function findMedian(sortedArray) {
+  const midIndex = Math.floor(sortedArray.length / 2);
+
+  if (sortedArray.length % 2 === 0) { // Even number of elements
+    // Average of the two middle elements
+    return (sortedArray[midIndex - 1] + sortedArray[midIndex]) / 2.0;
+  } else { // Odd number of elements
+    // The middle element
+    return sortedArray[midIndex];
   }
 }
 
@@ -307,11 +326,17 @@ exports.getRecommendations = functions.https.onCall(async (data, context) => {
     const accessToken = await ensureValidSpotifyAccessToken(userId);
     // Fetch the user's top tracks from Spotify
     const topTracksData = await fetchSpotifyTopTracks(accessToken);
+
+    // Compute median tempo
+    const tempos = topTracksData.items.map(
+        (item) => item.tempo).sort((a, b) => a - b);
+    const medianTempo = findMedian(tempos);
+
     // Extract the track IDs from the top tracks data
     const topTrackIds = topTracksData.items.map((item) => item.id);
     // Fetch recommendations using the track IDs
     const recommendations = await fetchSpotifyRecommendations(
-        accessToken, topTrackIds.slice(0, 5));
+        accessToken, topTrackIds.slice(0, 5), medianTempo);
 
     console.log(`Fetched ${recommendations.tracks.length} recommendations`);
 
