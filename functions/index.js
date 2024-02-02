@@ -202,10 +202,10 @@ async function fetchSpotifyTopTracks(accessToken) {
  * Helper function to fetch Spotify recommendations.
  * @param {String} accessToken
  * @param {Array<String>} trackIds
- * @param {Number} medianTempo
+ * @param {Object} medians
  * @return {Promise<any>}
  */
-async function fetchSpotifyRecommendations(accessToken, trackIds, medianTempo) {
+async function fetchSpotifyRecommendations(accessToken, trackIds, medians) {
   try {
     const response = await axios.get(SPOTIFY_RECOMMENDATIONS_ENDPOINT, {
       headers: {
@@ -214,7 +214,11 @@ async function fetchSpotifyRecommendations(accessToken, trackIds, medianTempo) {
       params: {
         seed_tracks: trackIds.join(","),
         limit: 20,
-        target_tempo: medianTempo,
+        target_tempo: medians.tempo,
+        target_energy: medians.energy,
+        // target_speechiness: medians.speechiness,
+        // target_instrumentalness: medians.instrumentalness,
+        // target_danceability: medians.danceability,
       },
     });
 
@@ -240,6 +244,57 @@ function findMedian(sortedArray) {
     // The middle element
     return sortedArray[midIndex];
   }
+}
+
+/**
+ * Helper function to compute the median of each attribute.
+ * @param {Array<Object>} items
+ * @return {{}}
+ */
+function computeMedians(items) {
+  // Initialize arrays to hold values of each attribute
+  const attributes = {
+    tempo: [],
+    energy: [],
+    speechiness: [],
+    instrumentalness: [],
+    danceability: [],
+  };
+
+  // Populate the arrays with values from each track
+  items.forEach((item) => {
+    attributes.tempo.push(item.tempo);
+    attributes.energy.push(item.energy);
+    attributes.speechiness.push(item.speechiness);
+    attributes.instrumentalness.push(item.instrumentalness);
+    attributes.danceability.push(item.danceability);
+  });
+
+  // Compute and return the median for each attribute
+  const medians = {};
+  Object.keys(attributes).forEach((attr) => {
+    // Sort the array of each attribute
+    attributes[attr].sort((a, b) => a - b);
+    // Compute the median
+    medians[attr] = findMedian(attributes[attr]);
+  });
+
+  return medians;
+}
+
+/**
+ * Helper function to get random elements from an array.
+ * @param {unknown[]} arr
+ * @param {number} count
+ * @return {unknown[]}
+ */
+function getRandomElements(arr, count) {
+  const randomElements = new Set();
+  while (randomElements.size < count) {
+    const randomIndex = Math.floor(Math.random() * arr.length);
+    randomElements.add(arr[randomIndex]);
+  }
+  return Array.from(randomElements);
 }
 
 
@@ -318,29 +373,20 @@ exports.getRecommendations = functions.https.onCall(async (data, context) => {
         "unauthenticated", "The function must be called while authenticated.");
   }
 
-  // Get the authenticated user's UID
-  const userId = context.auth.uid;
-
   try {
-    // Ensure the user's Spotify access token is valid
+    const userId = context.auth.uid;
     const accessToken = await ensureValidSpotifyAccessToken(userId);
-    // Fetch the user's top tracks from Spotify
+
     const topTracksData = await fetchSpotifyTopTracks(accessToken);
+    const medians = computeMedians(topTracksData.items);
 
-    // Compute median tempo
-    const tempos = topTracksData.items.map(
-        (item) => item.tempo).sort((a, b) => a - b);
-    const medianTempo = findMedian(tempos);
-
-    // Extract the track IDs from the top tracks data
     const topTrackIds = topTracksData.items.map((item) => item.id);
-    // Fetch recommendations using the track IDs
-    const recommendations = await fetchSpotifyRecommendations(
-        accessToken, topTrackIds.slice(0, 5), medianTempo);
+    const randomTopTrackIds = getRandomElements(topTrackIds, 5);
 
+    const recommendations = await fetchSpotifyRecommendations(
+        accessToken, randomTopTrackIds, medians);
     console.log(`Fetched ${recommendations.tracks.length} recommendations`);
 
-    // For now, return the top tracks data directly
     return recommendations;
   } catch (error) {
     console.error("Error fetching recommendations:", error);
