@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import TopTrack from './pages/TopTrack';
 import Callback from './components/Callback';
 import Dashboard from './pages/Dashboard';
+import Playlist from './pages/Playlist';
 
 
 function App() {
