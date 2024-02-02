@@ -308,17 +308,12 @@ exports.getRecommendations = functions.https.onCall(async (data, context) => {
     // Fetch the user's top tracks from Spotify
     const topTracksData = await fetchSpotifyTopTracks(accessToken);
     // Extract the track IDs from the top tracks data
-    const trackIds = topTracksData.items.map((item) => item.id);
+    const topTrackIds = topTracksData.items.map((item) => item.id);
     // Fetch recommendations using the track IDs
     const recommendations = await fetchSpotifyRecommendations(
-        accessToken, trackIds);
+        accessToken, topTrackIds.slice(0, 5));
 
-    console.log(
-        recommendations.map(
-            ({name, artists}) =>
-              `${name} by ${artists.map((artist) => artist.name).join(", ")}`,
-        ),
-    );
+    console.log(`Fetched ${recommendations.tracks.length} recommendations`);
 
     // For now, return the top tracks data directly
     return recommendations;
