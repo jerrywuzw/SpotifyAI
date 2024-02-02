@@ -18,6 +18,7 @@ const REDIRECT_URI = functions.config().spotify.redirect_uri;
 const SPOTIFY_TOKEN_ENDPOINT = "https://accounts.spotify.com/api/token";
 const SPOTIFY_TOP_TRACKS_ENDPOINT = "https://api.spotify.com/v1/me/top/tracks";
 const SPOTIFY_USER_PROFILE_ENDPOINT = "https://api.spotify.com/v1/me";
+const SPOTIFY_RECOMMENDATIONS_ENDPOINT = "https://api.spotify.com/v1/recommendations";
 
 // ================
 // Helper Functions
@@ -197,6 +198,32 @@ async function fetchSpotifyTopTracks(accessToken) {
   }
 }
 
+/**
+ * Helper function to fetch Spotify recommendations.
+ * @param {String} accessToken
+ * @param {Array<String>} trackIds
+ * @return {Promise<any>}
+ */
+async function fetchSpotifyRecommendations(accessToken, trackIds) {
+  try {
+    const response = await axios.get(SPOTIFY_RECOMMENDATIONS_ENDPOINT, {
+      headers: {
+        "Authorization": `Bearer ${accessToken}`,
+      },
+      params: {
+        seed_tracks: trackIds.join(","),
+        limit: 20, // You can adjust the limit as needed
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching Spotify recommendations:", error);
+    throw error;
+  }
+}
+
+
 // ==================
 // Firebase Functions
 // ==================
@@ -264,4 +291,40 @@ exports.getTopTracks = functions.https.onCall(async (data, context) => {
   }
 });
 
+// Get recommendations
+exports.getRecommendations = functions.https.onCall(async (data, context) => {
+  // Check if the user is authenticated
+  if (!context.auth) {
+    throw new functions.https.HttpsError(
+        "unauthenticated", "The function must be called while authenticated.");
+  }
 
+  // Get the authenticated user's UID
+  const userId = context.auth.uid;
+
+  try {
+    // Ensure the user's Spotify access token is valid
+    const accessToken = await ensureValidSpotifyAccessToken(userId);
+    // Fetch the user's top tracks from Spotify
+    const topTracksData = await fetchSpotifyTopTracks(accessToken);
+    // Extract the track IDs from the top tracks data
+    const trackIds = topTracksData.items.map((item) => item.id);
+    // Fetch recommendations using the track IDs
+    const recommendations = await fetchSpotifyRecommendations(
+        accessToken, trackIds);
+
+    console.log(
+        recommendations.map(
+            ({name, artists}) =>
+              `${name} by ${artists.map((artist) => artist.name).join(", ")}`,
+        ),
+    );
+
+    // For now, return the top tracks data directly
+    return recommendations;
+  } catch (error) {
+    console.error("Error fetching recommendations:", error);
+    throw new functions.https.HttpsError(
+        "internal", "Failed to fetch recommendations.");
+  }
+});

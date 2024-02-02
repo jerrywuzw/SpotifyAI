@@ -31,7 +31,6 @@ export const getTopTracks = async () => {
   try {
     const result = await getTopTracksFunction();
     console.log('Result from getTopTracks Firebase function:', result);
-
     return result.data; // The data returned from your Firebase function
   } catch (error) {
     console.error('Error calling getTopTracks Firebase function:', error);
@@ -40,13 +39,14 @@ export const getTopTracks = async () => {
 };
 
 export const getRecommendations = async () => {
-  // Placeholder for future implementation
-  console.log('getRecommendations function will be implemented here.');
-
-  // For now, it does nothing. In the future, you can implement the logic
-  // to call a Firebase function or any other logic needed to fetch recommendations.
-
-  // Returning a placeholder response or undefined for now
-  return undefined;
+  const getRecommendationsFunction = httpsCallable(getFunctions(), 'getRecommendations');
+  try {
+    const result = await getRecommendationsFunction();
+    console.log('Result from getRecommendations Firebase function:', result);
+    return result.data;
+  } catch (error) {
+    console.error('Error calling getRecommendations Firebase function:', error);
+    throw error;
+  }
 };
 
