@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { getRecommendations } from '../service/spotifyService'; // Ensure this is the correct path
-import '../css/Playlist.css'; // Import your CSS file for styling
+import { getRecommendations } from '../service/spotifyService';
+import '../css/Playlist.css'; // Make sure this path is correct
 
 const Playlist = () => {
   const [tracks, setTracks] = useState([]);
@@ -10,6 +10,17 @@ const Playlist = () => {
 
   // Function to get color for each track
   const getColorForTrack = (index) => `#${colors[index % colors.length]}`;
+
+  // Function to determine if the title is long
+  const isTitleLong = (title) => {
+    const maxTitleLength = 30; // Adjust based on your needs
+    return title.length > maxTitleLength;
+  };
+
+  // Function to handle play icon click
+  const handlePlayIconClick = (spotifyUrl) => {
+    window.open(spotifyUrl, '_blank');
+  };
 
   useEffect(() => {
     const fetchRecommendations = async () => {
@@ -38,9 +49,12 @@ const Playlist = () => {
               <img src={track.album.images[0].url} alt={track.name} className="album-cover" />
             </a>
             <div className="track-info">
-              <span className="track-name">{track.name}</span>
+              <span className={`track-name ${isTitleLong(track.name) ? 'scrolling' : ''}`}>
+                <span>{track.name}</span>
+              </span>
               <span className="track-artist">{track.artists.map(artist => artist.name).join(', ')}</span>
             </div>
+            <div className="play-icon" onClick={() => handlePlayIconClick(track.external_urls.spotify)}></div>
           </li>
         ))}
       </ul>

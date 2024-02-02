@@ -1,20 +1,20 @@
 .playlist {
   list-style-type: none;
   padding: 0;
-  margin: 10vw; /* Adds padding on both sides */
+  margin: 15vw; /* Adds padding on both sides */
 }
 
 .track-item {
   display: flex;
   align-items: center;
-  justify-content: space-between; /* Distributes space between elements */
-  margin-bottom: 0; /* Removes space between items */
+  justify-content: space-between;
+  margin-bottom: 0;
   padding: 10px;
 }
 
 .album-cover {
-  width: 120px; /* Increased width */
-  height: 120px; /* Increased height */
+  width: 180px;
+  height: 180px;
   margin-right: 10px;
   border-radius: 4px;
   padding-left: 1vw;
@@ -23,19 +23,54 @@
 .track-info {
   display: flex;
   flex-direction: column;
-  justify-content: center; /* Centers text vertically */
-  align-items: center; /* Centers text horizontally */
-  flex-grow: 1; /* Allows the track info to take up available space */
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
   color: white;
-  padding-left: 1vw; /* Optional, adds a bit of space after the album cover */
+  padding-left: 1vw;
+  overflow: hidden; /* Ensures scrolling text stays within this container */
 }
 
 .track-name {
   font-weight: bold;
-  font-size: 5em; /* Larger font size for track name */
+  font-size: 4em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip; /* Prevents text from spilling over */
+  text-align: center; /* Centers the text */
+  padding: 0 10px; /* Adds padding on both sides */
+}
+
+.track-name span {
+  display: inline-block;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.scrolling {
+  animation: scroll-title 20s linear infinite;
+}
+
+@keyframes scroll-title {
+  0%, 100% { transform: translateX(0%); }
+  50% { transform: translateX(-50%); }
 }
 
 .track-artist {
   font-style: italic;
-  font-size: 0.8em; /* Smaller font size for artist name */
+  font-size: 2em;
 }
+
+.play-icon {
+  width: 0;
+  height: 0;
+  border-top: 30px solid transparent;  /* Increased height of the triangle */
+  border-bottom: 30px solid transparent;  /* Increased height of the triangle */
+  border-left: 60px solid white;  /* Increased width of the triangle */
+  cursor: pointer;
+  align-self: center;
+  margin-left: auto;
+  margin-right: 2vw;
+}
+
