@@ -42,6 +42,14 @@ const Playlist = () => {
   return (
     <div>
       <h1 className="header-title">Recommended Playlist</h1>
+      <div className="button-container">
+        {/* Add five buttons here */}
+        <button className="playlist-button">Button 1</button>
+        <button className="playlist-button">Button 2</button>
+        <button className="playlist-button">Button 3</button>
+        <button className="playlist-button">Button 4</button>
+        <button className="playlist-button">Button 5</button>
+      </div>
       <ul className="playlist">
         {tracks.map((track, index) => (
           <li key={track.id} className="track-item" style={{ backgroundColor: getColorForTrack(index) }}>

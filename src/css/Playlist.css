@@ -1,6 +1,7 @@
 /* Default styles for desktop */
 .header-title {
   font-size: 96px;
+  text-align: center; /* Center the title */
 }
 
 .playlist {
@@ -109,4 +110,42 @@
     border-left: 30px solid white;  /* Adjust triangle size for mobile */
     margin-right: 1vw; /* Adjust margin for mobile */
   }
+}
+
+/* Button styling */
+.button-container {
+  display: flex;
+  justify-content: center; /* Center the buttons horizontally */
+  margin: 2em 0; /* Add space above and below the buttons */
+}
+
+.playlist-button {
+  width: 120px; /* Set button width */
+  height: 60px; /* Set button height */
+  margin: 0 5px; /* Add space between buttons */
+  border: none;
+  border-radius: 20px;
+  font-size: 1.5em; /* Adjust font size */
+  color: white; /* Set font color to white */
+  cursor: pointer;
+}
+
+.playlist-button:nth-child(1) {
+  background-color: #FFCB57; /* Color for first button */
+}
+
+.playlist-button:nth-child(2) {
+  background-color: #FB7DA8; /* Color for second button */
+}
+
+.playlist-button:nth-child(3) {
+  background-color: #FD5A46; /* Color for third button */
+}
+
+.playlist-button:nth-child(4) {
+  background-color: #552CB7; /* Color for fourth button */
+}
+
+.playlist-button:nth-child(5) {
+  background-color: #00995E; /* Color for fifth button */
 }
