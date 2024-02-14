@@ -190,8 +190,9 @@
 .loading-icon {
   display: block; /* Ensure it's a block-level element */
   margin: 0 auto; /* Center horizontally */
-  width: 50vw; /* Set the width to make it smaller */
-  height: 50vw; /* Set the height to make it smaller */
+  margin-top: 5vw;
+  width: 25vw; /* Set the width to make it smaller */
+  height: 25vw; /* Set the height to make it smaller */
 }
 
 
