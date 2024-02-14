@@ -7,7 +7,8 @@
 .playlist {
   list-style-type: none;
   padding: 0;
-  margin: 15vw; /* Adds padding on both sides */
+  margin: 15vw;
+  margin-top: 3vh;
 }
 
 .track-item {
@@ -112,42 +113,78 @@
   }
 }
 
-/* Button styling */
+/*button styling*/
 .button-container {
   display: flex;
   justify-content: center; /* Center the buttons horizontally */
   margin: 2em 0; /* Add space above and below the buttons */
+  position: relative; /* Needed for pseudo-element positioning */
 }
 
 .playlist-button {
-  width: 120px; /* Set button width */
-  height: 60px; /* Set button height */
-  margin: 0 5px; /* Add space between buttons */
-  border: none;
-  border-radius: 20px;
-  font-size: 1.5em; /* Adjust font size */
+  width: 130px; /* Set button width for a more square look */
+  height: 50px; /* Set button height */
+  border: 3px solid black; /* Solid border for a defined edge */
+  background: linear-gradient(to top, #808080 0%, #A9A9A9 50%, #C0C0C0 100%); /* Gradient background for 3D effect */
+  font-size: 1em; /* Adjust font size for readability */
   color: white; /* Set font color to white */
   cursor: pointer;
+  transition: all 0.2s ease; /* Smooth transition for all changes */
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.7); /* 3D shadow */
+  transform: translateY(-2px); /* Make the button 'pop' out more */
+  position: relative; /* Needed for pseudo-element positioning */
+  overflow: visible; /* Allow pseudo-elements to be visible outside the button */
 }
 
+/* Pseudo-elements for 'grounding' lines and shadow */
+.playlist-button:before, .playlist-button:after {
+  content: '';
+  position: absolute;
+  bottom: -10px; /* Adjust based on your design */
+  width: 30%; /* This creates the 'trapezoid' effect */
+  height: 5px; /* Thickness of the shadow */
+  background: rgba(0, 0, 0, 0.2); /* Shadow color */
+  z-index: -1; /* Ensure shadow is behind button */
+  transition: all 0.2s ease; /* Smooth transition for all changes */
+}
+
+.playlist-button:before {
+  left: 10%; /* Adjust based on your design */
+  transform: skewX(-20deg); /* Skew for trapezoid shape */
+}
+
+.playlist-button:after {
+  right: 10%; /* Adjust based on your design */
+  transform: skewX(20deg); /* Skew for trapezoid shape */
+}
+
+.playlist-button.active, .playlist-button:focus, .playlist-button:hover {
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* Subtle shadow for 'pressed' effect */
+  transform: translateY(4px); /* Pressed effect, reducing the 'pop out' */
+  background: linear-gradient(to top, #696969 0%, #808080 50%); /* Darker gradient for pressed state */
+  
+  /* Adjust pseudo-elements for pressed state */
+  &:before, &:after {
+    width: 40%; /* Increase width for pressed state to make shadow wider */
+    bottom: -6px; /* Move shadow closer to the button */
+  }
+}
+
+/* Specific button colors for a more vibrant look */
 .playlist-button:nth-child(1) {
-  background-color: #FFCB57; /* Color for first button */
+  background: linear-gradient(to top, #E0AC69 0%, #FFCB57 50%, #FFD700 100%);
 }
-
 .playlist-button:nth-child(2) {
-  background-color: #FB7DA8; /* Color for second button */
+  background: linear-gradient(to top, #F98CAE 0%, #FB7DA8 50%, #FF69B4 100%);
 }
-
 .playlist-button:nth-child(3) {
-  background-color: #FD5A46; /* Color for third button */
+  background: linear-gradient(to top, #F06D58 0%, #FD5A46 50%, #FF4500 100%);
 }
-
 .playlist-button:nth-child(4) {
-  background-color: #552CB7; /* Color for fourth button */
+  background: linear-gradient(to top, #8471BE 0%, #552CB7 50%, #6A5ACD 100%);
 }
-
 .playlist-button:nth-child(5) {
-  background-color: #00995E; /* Color for fifth button */
+  background: linear-gradient(to top, #008B45 0%, #00995E 50%, #00CD66 100%);
 }
 
 .spinner {
@@ -165,7 +202,6 @@
   100% { transform: rotate(360deg); }
 }
 
-
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -180,6 +216,5 @@
 .track-item {
   animation-name: fadeInUp;
   animation-duration: 1s;
-  /* The animation-fill-mode property specifies a style for the target element when the animation is not playing (before it starts, after it ends, or both). */
   animation-fill-mode: both;
 }
