@@ -366,11 +366,28 @@ exports.getTopTracks = functions.https.onCall(async (data, context) => {
 });
 
 // Get recommendations
+const styleAttributes = {
+  Chill: { target_energy: 0.3, target_valence: 0.3, target_tempo: 90 },
+  Happy: { target_energy: 0.7, target_valence: 0.8, target_tempo: 120 },
+  Energetic: { target_energy: 0.9, target_valence: 0.6, target_tempo: 150 },
+  Workout: { target_energy: 0.8, target_valence: 0.5, target_tempo: 160 },
+  Sad: { target_energy: 0.2, target_valence: 0.2, target_tempo: 70 }
+};
+
 exports.getRecommendations = functions.https.onCall(async (data, context) => {
   // Check if the user is authenticated
   if (!context.auth) {
     throw new functions.https.HttpsError(
         "unauthenticated", "The function must be called while authenticated.");
+  }
+
+  // Check for the style parameter, default to 'Chill' if not provided
+  const style = data.style || 'Chill';
+
+  // Validate if the provided style is one of the predefined ones
+  if (!Object.keys(styleAttributes).includes(style)) {
+    throw new functions.https.HttpsError(
+        "invalid-argument", `The provided style '${style}' is not supported.`);
   }
 
   try {
@@ -383,9 +400,12 @@ exports.getRecommendations = functions.https.onCall(async (data, context) => {
     const topTrackIds = topTracksData.items.map((item) => item.id);
     const randomTopTrackIds = getRandomElements(topTrackIds, 5);
 
+    // Retrieve the attributes for the selected style
+    const styleParams = styleAttributes[style];
+
     const recommendations = await fetchSpotifyRecommendations(
-        accessToken, randomTopTrackIds, medians);
-    console.log(`Fetched ${recommendations.tracks.length} recommendations`);
+        accessToken, randomTopTrackIds, {...medians, ...styleParams});
+    console.log(`Fetched ${recommendations.tracks.length} recommendations for style ${style}`);
 
     return recommendations;
   } catch (error) {
@@ -394,3 +414,4 @@ exports.getRecommendations = functions.https.onCall(async (data, context) => {
         "internal", "Failed to fetch recommendations.");
   }
 });
+

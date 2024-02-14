@@ -4,57 +4,49 @@ import '../css/Playlist.css'; // Make sure this path is correct
 
 const Playlist = () => {
   const [tracks, setTracks] = useState([]);
-  const [isLoading, setIsLoading] = useState(true); // Add this line
+  const [isLoading, setIsLoading] = useState(true);
+  const styles = ['Nostalgic Hits', 'Weekend Groove', 'Do Not Disturb', 'Unwind', 'Gem Finder'];
 
-  // Define the color palette
-  const colors = ['FFCB57', 'FB7DA8', 'FD5A46', '552CB7', '00995E', '058CD7'];
+  const getColorForTrack = (index) => `#${['FFCB57', 'FB7DA8', 'FD5A46', '552CB7', '00995E', '058CD7'][index % 6]}`;
+  const isTitleLong = (title) => title.length > 30;
+  const handlePlayIconClick = (spotifyUrl) => window.open(spotifyUrl, '_blank');
 
-  // Function to get color for each track
-  const getColorForTrack = (index) => `#${colors[index % colors.length]}`;
-
-  // Function to determine if the title is long
-  const isTitleLong = (title) => {
-    const maxTitleLength = 30; // Adjust based on your needs
-    return title.length > maxTitleLength;
-  };
-
-  // Function to handle play icon click
-  const handlePlayIconClick = (spotifyUrl) => {
-    window.open(spotifyUrl, '_blank');
+  const fetchRecommendations = async (style = 'Nostalgic Hits') => {
+    try {
+      setIsLoading(true);
+      const data = await getRecommendations({ style }); // Pass the selected style as an object
+      if (data && data.tracks) {
+        setTracks(data.tracks);
+      } else {
+        console.log('No tracks found in response:', data);
+      }
+    } catch (error) {
+      console.error('Error fetching recommendations:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
-    const fetchRecommendations = async () => {
-      try {
-        setIsLoading(true); // Start loading
-        const data = await getRecommendations();
-        if (data && data.tracks) {
-          setTracks(data.tracks);
-        } else {
-          console.log('No tracks found in response:', data);
-        }
-      } catch (error) {
-        console.error('Error fetching recommendations:', error);
-      } finally {
-        setIsLoading(false); // Stop loading regardless of the outcome
-      }
-    };
-
-    fetchRecommendations();
+    fetchRecommendations(); // Fetch default style recommendations on mount
   }, []);
 
   return (
     <div>
       <h1 className="header-title">Recommended Playlist</h1>
       <div className="button-container">
-        <button className="playlist-button">Button 1</button>
-        <button className="playlist-button">Button 2</button>
-        <button className="playlist-button">Button 3</button>
-        <button className="playlist-button">Button 4</button>
-        <button className="playlist-button">Button 5</button>
+        {styles.map((style, index) => (
+          <button
+            key={index}
+            className="playlist-button"
+            onClick={() => fetchRecommendations(style)}
+          >
+            {style}
+          </button>
+        ))}
       </div>
       {isLoading ? (
-        <div className="spinner"></div> // Render spinner while loading
+        <div className="spinner"></div>
       ) : (
         <ul className="playlist">
           {tracks.map((track, index) => (
@@ -63,7 +55,7 @@ const Playlist = () => {
               className="track-item"
               style={{
                 backgroundColor: getColorForTrack(index),
-                animationDelay: `${index * 0.1}s` // Each item will start animating 0.1s after the previous one
+                animationDelay: `${index * 0.1}s`
               }}
             >
               <a href={track.external_urls.spotify} target="_blank" rel="noopener noreferrer">
@@ -71,7 +63,7 @@ const Playlist = () => {
               </a>
               <div className="track-info">
                 <span className={`track-name ${isTitleLong(track.name) ? 'scrolling' : ''}`}>
-                  <span>{track.name}</span>
+                  {track.name}
                 </span>
                 <span className="track-artist">{track.artists.map(artist => artist.name).join(', ')}</span>
               </div>
