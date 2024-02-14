@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getRecommendations } from '../service/spotifyService';
 import '../css/Playlist.css'; // Make sure this path is correct
-import '../logo/loading.gif';
+import loadingGif from '../logo/loading.gif'; 
 
 const Playlist = () => {
     const [tracks, setTracks] = useState([]);
@@ -49,7 +49,7 @@ const Playlist = () => {
                 ))}
             </div>
             {isLoading ? (
-                <img src="loading.gif" alt="Loading..." className="loading-icon" />
+                <img key={`loading-${isLoading}`} src={loadingGif} alt="Loading..." className="loading-icon" />
             ) : (
                 <ul className="playlist">
                     {tracks.map((track, index) => (
