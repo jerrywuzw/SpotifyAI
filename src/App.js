@@ -5,6 +5,7 @@ import TopTrack from './pages/TopTrack';
 import Callback from './components/Callback';
 import Dashboard from './pages/Dashboard';
 import Playlist from './pages/Playlist';
+import SongDetails from './SongDetails';
 
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/callback" element={<Callback />} />
         <Route path="/playlist" element={<Playlist />} />
+        <Route path="/song/:songId" element={<SongDetails />} />
       </Routes>
     </Router>
   );
