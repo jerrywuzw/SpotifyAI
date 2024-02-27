@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { getRecommendations } from '../service/spotifyService';
 import '../css/Playlist.css'; // Make sure this path is correct
-import loadingGif from '../logo/loading.gif'; 
+import loadingGif from '../logo/loading.gif';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const Playlist = () => {
     const [tracks, setTracks] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [selectedStyle, setSelectedStyle] = useState('Nostalgic Hits'); // New state for tracking selected style
+    const [selectedStyle, setSelectedStyle] = useState('Nostalgic Hits');
     const styles = ['Nostalgic Hits', 'Weekend Groove', 'Do Not Disturb', 'Unwind', 'Gem Finder'];
+    const navigate = useNavigate(); // Initialize useNavigate
 
     const getColorForTrack = (index) => `#${['FFCB57', 'FB7DA8', 'FD5A46', '552CB7', '00995E', '058CD7'][index % 6]}`;
     const isTitleLong = (title) => title.length > 30;
@@ -19,7 +21,7 @@ const Playlist = () => {
             const data = await getRecommendations({ style });
             if (data && data.tracks) {
                 setTracks(data.tracks);
-                setSelectedStyle(style); // Update selected style state
+                setSelectedStyle(style);
             } else {
                 console.log('No tracks found in response:', data);
             }
@@ -30,9 +32,14 @@ const Playlist = () => {
         }
     };
 
+    // Navigate to SongDetails page
+    const handleAlbumClick = (songId) => {
+        navigate(`/song/${songId}`);
+    };
+
     useEffect(() => {
-        fetchRecommendations(selectedStyle); // Fetch recommendations based on the selected style
-    }, [selectedStyle]); // This will re-fetch recommendations when the selected style changes
+        fetchRecommendations(selectedStyle);
+    }, [selectedStyle]);
 
     return (
         <div>
@@ -41,7 +48,7 @@ const Playlist = () => {
                 {styles.map((style, index) => (
                     <button
                         key={index}
-                        className={`playlist-button ${selectedStyle === style ? 'active' : ''}`} // Apply 'active' class based on the selected style
+                        className={`playlist-button ${selectedStyle === style ? 'active' : ''}`}
                         onClick={() => fetchRecommendations(style)}
                     >
                         {style}
@@ -61,9 +68,10 @@ const Playlist = () => {
                                 animationDelay: `${index * 0.1}s`
                             }}
                         >
-                            <a href={track.external_urls.spotify} target="_blank" rel="noopener noreferrer">
+                            {/* Update this part to use onClick handler */}
+                            <div onClick={() => handleAlbumClick(track.id)} style={{ cursor: 'pointer' }}>
                                 <img src={track.album.images[0].url} alt={track.name} className="album-cover" />
-                            </a>
+                            </div>
                             <div className="track-info">
                                 <span className={`track-name ${isTitleLong(track.name) ? 'scrolling' : ''}`}>
                                     {track.name}

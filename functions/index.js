@@ -415,3 +415,55 @@ exports.getRecommendations = functions.https.onCall(async (data, context) => {
   }
 });
 
+// This function retrieves details for a specific track by its Spotify ID.
+exports.getTrackDetails = functions.https.onCall(async (data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError(
+      "unauthenticated",
+      "The function must be called while authenticated."
+    );
+  }
+
+  const trackId = data.trackId;
+  if (!trackId) {
+    throw new functions.https.HttpsError(
+      "invalid-argument",
+      "The function must be called with one argument 'trackId'."
+    );
+  }
+
+  try {
+    const accessToken = await ensureValidSpotifyAccessToken(context.auth.uid);
+    console.log(`Access token for user ${context.auth.uid} is valid`);
+
+    const trackDetails = await fetchSpotifyTrackDetails(accessToken, trackId);
+    console.log(`Successfully fetched details for track ${trackId}`);
+
+    return { message: "Track details fetched successfully", trackDetails };
+  } catch (error) {
+    console.error("Error in getTrackDetails function:", error);
+    throw new functions.https.HttpsError(
+      "internal",
+      "Error fetching track details from Spotify"
+    );
+  }
+});
+
+// You would also need to implement the fetchSpotifyTrackDetails helper function:
+async function fetchSpotifyTrackDetails(accessToken, trackId) {
+  const trackEndpoint = `https://api.spotify.com/v1/tracks/${trackId}`;
+  try {
+    const response = await axios.get(trackEndpoint, {
+      headers: {
+        "Authorization": `Bearer ${accessToken}`,
+      },
+    });
+    return response.data; // The track's details
+  } catch (error) {
+    console.error("Error fetching Spotify track details:", error);
+    throw error;
+  }
+}
+
+
+

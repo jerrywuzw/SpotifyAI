@@ -5,7 +5,7 @@ import TopTrack from './pages/TopTrack';
 import Callback from './components/Callback';
 import Dashboard from './pages/Dashboard';
 import Playlist from './pages/Playlist';
-import SongDetails from './SongDetails';
+import SongDetails from './pages/SongDetails';
 
 
 function App() {
