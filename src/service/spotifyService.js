@@ -50,3 +50,15 @@ export const getRecommendations = async () => {
   }
 };
 
+export const getTrackDetails = async (trackId) => {
+  const functions = getFunctions();
+  const callGetTrackDetails = httpsCallable(functions, 'getTrackDetails');
+  try {
+      const result = await callGetTrackDetails({ trackId });
+      return result.data; // Assuming the function returns track details directly
+  } catch (error) {
+      console.error('Error fetching track details:', error);
+      throw error; // Rethrow or handle as needed
+  }
+};
+

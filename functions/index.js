@@ -367,11 +367,11 @@ exports.getTopTracks = functions.https.onCall(async (data, context) => {
 
 // Get recommendations
 const styleAttributes = {
-  Chill: { target_energy: 0.3, target_valence: 0.3, target_tempo: 90 },
-  Happy: { target_energy: 0.7, target_valence: 0.8, target_tempo: 120 },
-  Energetic: { target_energy: 0.9, target_valence: 0.6, target_tempo: 150 },
-  Workout: { target_energy: 0.8, target_valence: 0.5, target_tempo: 160 },
-  Sad: { target_energy: 0.2, target_valence: 0.2, target_tempo: 70 }
+  Chill: {target_energy: 0.3, target_valence: 0.3, target_tempo: 90},
+  Happy: {target_energy: 0.7, target_valence: 0.8, target_tempo: 120},
+  Energetic: {target_energy: 0.9, target_valence: 0.6, target_tempo: 150},
+  Workout: {target_energy: 0.8, target_valence: 0.5, target_tempo: 160},
+  Sad: {target_energy: 0.2, target_valence: 0.2, target_tempo: 70},
 };
 
 exports.getRecommendations = functions.https.onCall(async (data, context) => {
@@ -382,7 +382,7 @@ exports.getRecommendations = functions.https.onCall(async (data, context) => {
   }
 
   // Check for the style parameter, default to 'Chill' if not provided
-  const style = data.style || 'Chill';
+  const style = data.style || "Chill";
 
   // Validate if the provided style is one of the predefined ones
   if (!Object.keys(styleAttributes).includes(style)) {
@@ -405,7 +405,8 @@ exports.getRecommendations = functions.https.onCall(async (data, context) => {
 
     const recommendations = await fetchSpotifyRecommendations(
         accessToken, randomTopTrackIds, {...medians, ...styleParams});
-    console.log(`Fetched ${recommendations.tracks.length} recommendations for style ${style}`);
+    console.log(`Fetched ${recommendations.tracks.length}
+    recommendations for style ${style}`);
 
     return recommendations;
   } catch (error) {
@@ -419,16 +420,16 @@ exports.getRecommendations = functions.https.onCall(async (data, context) => {
 exports.getTrackDetails = functions.https.onCall(async (data, context) => {
   if (!context.auth) {
     throw new functions.https.HttpsError(
-      "unauthenticated",
-      "The function must be called while authenticated."
+        "unauthenticated",
+        "The function must be called while authenticated.",
     );
   }
 
   const trackId = data.trackId;
   if (!trackId) {
     throw new functions.https.HttpsError(
-      "invalid-argument",
-      "The function must be called with one argument 'trackId'."
+        "invalid-argument",
+        "The function must be called with one argument 'trackId'.",
     );
   }
 
@@ -439,17 +440,23 @@ exports.getTrackDetails = functions.https.onCall(async (data, context) => {
     const trackDetails = await fetchSpotifyTrackDetails(accessToken, trackId);
     console.log(`Successfully fetched details for track ${trackId}`);
 
-    return { message: "Track details fetched successfully", trackDetails };
+    return {message: "Track details fetched successfully", trackDetails};
   } catch (error) {
     console.error("Error in getTrackDetails function:", error);
     throw new functions.https.HttpsError(
-      "internal",
-      "Error fetching track details from Spotify"
+        "internal",
+        "Error fetching track details from Spotify",
     );
   }
 });
 
-// You would also need to implement the fetchSpotifyTrackDetails helper function:
+/**
+ * Fetches details for a specific Spotify track.
+ *
+ * @param {string} accessToken The access token for Spotify API authentication.
+ * @param {string} trackId The unique identifier for the track.
+ * @return {Promise<Object>} The track details from Spotify API.
+ */
 async function fetchSpotifyTrackDetails(accessToken, trackId) {
   const trackEndpoint = `https://api.spotify.com/v1/tracks/${trackId}`;
   try {
@@ -464,6 +471,5 @@ async function fetchSpotifyTrackDetails(accessToken, trackId) {
     throw error;
   }
 }
-
 
 

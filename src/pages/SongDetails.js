@@ -1,46 +1,49 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom'; // Assuming you're using React Router
-import { getFunctions, httpsCallable } from 'firebase/functions';
+import React, { useState, useEffect } from 'react';
+import { getTrackDetails } from '../service/spotifyService'; // Ensure this path matches your project structure
 
-function SongDetail() {
-  const { trackId } = useParams();
+const SongDetail = ({ trackId }) => {
   const [trackDetails, setTrackDetails] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    const fetchTrackDetails = async () => {
-      const functions = getFunctions();
-      const getTrackDetails = httpsCallable(functions, 'getTrackDetails');
+    if (!trackId) return; // or show a default message or perform other actions
 
+    const fetchTrackDetails = async () => {
+      setLoading(true);
       try {
-        const result = await getTrackDetails({ trackId });
-        setTrackDetails(result.data.trackDetails);
-      } catch (error) {
-        console.error('Error fetching track details:', error);
+        const data = await getTrackDetails(trackId);
+        setTrackDetails(data.trackDetails); // Ensure this matches the structure returned by your function
+        setError('');
+      } catch (err) {
+        console.error('Error fetching track details:', err);
+        setError('Failed to fetch track details');
+        setTrackDetails(null);
+      } finally {
+        setLoading(false);
       }
     };
 
-    if (trackId) {
-      fetchTrackDetails();
-    }
-  }, [trackId]);
+    fetchTrackDetails();
+  }, [trackId]); // This will re-fetch when trackId changes
 
-  if (!trackDetails) {
-    return <div>Loading...</div>;
-  }
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
-  // Render the track details
   return (
     <div>
-      <h2>{trackDetails.name}</h2>
-      <p>Artist: {trackDetails.artists.map(artist => artist.name).join(', ')}</p>
-      <p>Album: {trackDetails.album.name}</p>
-      <p>Released: {trackDetails.album.release_date}</p>
-      <p>Duration: {Math.floor(trackDetails.duration_ms / 60000)}:{((trackDetails.duration_ms % 60000) / 1000).toFixed(0)}</p>
-      <img src={trackDetails.album.images[0].url} alt="Album cover" />
-      <br />
-      <a href={trackDetails.external_urls.spotify}>Listen on Spotify</a>
+      {trackDetails ? (
+        <div>
+          <h2>{trackDetails.name}</h2> {/* Adjust fields based on your data structure */}
+          <p>Artist: {trackDetails.artists?.map(artist => artist.name).join(', ')}</p>
+          <p>Album: {trackDetails.album?.name}</p>
+          <img src={trackDetails.album?.images[0]?.url} alt="Album cover" />
+        </div>
+      ) : (
+        <div>No track details available</div>
+      )}
     </div>
   );
-}
+};
 
 export default SongDetail;

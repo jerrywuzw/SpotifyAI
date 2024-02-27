@@ -1,0 +1,53 @@
+[debug] [2024-02-27T05:25:42.017Z] ----------------------------------------------------------------------
+[debug] [2024-02-27T05:25:42.018Z] Command:       /usr/local/bin/node /usr/local/bin/firebase deploy --only functions:getTrackDetails
+[debug] [2024-02-27T05:25:42.018Z] CLI Version:   12.4.6
+[debug] [2024-02-27T05:25:42.018Z] Platform:      darwin
+[debug] [2024-02-27T05:25:42.018Z] Node Version:  v18.16.0
+[debug] [2024-02-27T05:25:42.023Z] Time:          Mon Feb 26 2024 21:25:42 GMT-0800 (Pacific Standard Time)
+[debug] [2024-02-27T05:25:42.023Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-02-27T05:25:42.060Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-02-27T05:25:42.061Z] > authorizing via signed-in user (jerrywuzw@gmail.com)
+[debug] [2024-02-27T05:25:42.061Z] [iam] checking project spotifyai-374f6 for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]
+[debug] [2024-02-27T05:25:42.061Z] > refreshing access token with scopes: []
+[debug] [2024-02-27T05:25:42.062Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2024-02-27T05:25:42.062Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2024-02-27T05:25:42.243Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 400
+[debug] [2024-02-27T05:25:42.243Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2024-02-27T05:25:42.244Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/spotifyai-374f6:testIamPermissions [none]
+[debug] [2024-02-27T05:25:42.244Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/spotifyai-374f6:testIamPermissions x-goog-quota-user=projects/spotifyai-374f6
+[debug] [2024-02-27T05:25:42.244Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/spotifyai-374f6:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2024-02-27T05:25:42.440Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/spotifyai-374f6:testIamPermissions 401
+[debug] [2024-02-27T05:25:42.440Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/spotifyai-374f6:testIamPermissions {"error":{"code":401,"message":"Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.","status":"UNAUTHENTICATED","details":[{"@type":"type.googleapis.com/google.rpc.ErrorInfo","reason":"ACCESS_TOKEN_TYPE_UNSUPPORTED","metadata":{"method":"google.cloudresourcemanager.v1.Projects.TestIamPermissions","service":"cloudresourcemanager.googleapis.com"}}]}}
+[debug] [2024-02-27T05:25:42.441Z] [iam] error while checking permissions, command may fail: FirebaseError: HTTP Error: 401, Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+[debug] [2024-02-27T05:25:42.442Z] > refreshing access token with scopes: []
+[debug] [2024-02-27T05:25:42.443Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2024-02-27T05:25:42.443Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2024-02-27T05:25:42.572Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 400
+[debug] [2024-02-27T05:25:42.572Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2024-02-27T05:25:42.573Z] >>> [apiv2][query] POST https://iam.googleapis.com/v1/projects/spotifyai-374f6/serviceAccounts/spotifyai-374f6@appspot.gserviceaccount.com:testIamPermissions [none]
+[debug] [2024-02-27T05:25:42.573Z] >>> [apiv2][body] POST https://iam.googleapis.com/v1/projects/spotifyai-374f6/serviceAccounts/spotifyai-374f6@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2024-02-27T05:25:42.898Z] <<< [apiv2][status] POST https://iam.googleapis.com/v1/projects/spotifyai-374f6/serviceAccounts/spotifyai-374f6@appspot.gserviceaccount.com:testIamPermissions 401
+[debug] [2024-02-27T05:25:42.899Z] <<< [apiv2][body] POST https://iam.googleapis.com/v1/projects/spotifyai-374f6/serviceAccounts/spotifyai-374f6@appspot.gserviceaccount.com:testIamPermissions {"error":{"code":401,"message":"Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.","status":"UNAUTHENTICATED","details":[{"@type":"type.googleapis.com/google.rpc.ErrorInfo","reason":"ACCESS_TOKEN_TYPE_UNSUPPORTED","metadata":{"method":"google.iam.admin.v1.IAM.TestIamPermissions","service":"iam.googleapis.com"}}]}}
+[debug] [2024-02-27T05:25:42.899Z] [functions] service account IAM check errored, deploy may fail: HTTP Error: 401, Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project. {"name":"FirebaseError","children":[],"context":{"body":{"error":{"code":401,"message":"Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.","status":"UNAUTHENTICATED","details":[{"@type":"type.googleapis.com/google.rpc.ErrorInfo","reason":"ACCESS_TOKEN_TYPE_UNSUPPORTED","metadata":{"method":"google.iam.admin.v1.IAM.TestIamPermissions","service":"iam.googleapis.com"}}]}},"response":{"statusCode":401}},"exit":1,"message":"HTTP Error: 401, Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.","status":401}
+[info] 
+[info] === Deploying to 'spotifyai-374f6'...
+[info] 
+[info] i  deploying functions 
+[info] Running command: npm --prefix "$RESOURCE_DIR" run lint
+[info] ✔  functions: Finished running predeploy script. 
+[debug] [2024-02-27T05:25:47.228Z] > refreshing access token with scopes: []
+[debug] [2024-02-27T05:25:47.228Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2024-02-27T05:25:47.229Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2024-02-27T05:25:47.353Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 400
+[debug] [2024-02-27T05:25:47.353Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2024-02-27T05:25:47.355Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/spotifyai-374f6 [none]
+[debug] [2024-02-27T05:25:47.582Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/spotifyai-374f6 401
+[debug] [2024-02-27T05:25:47.582Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/spotifyai-374f6 {"error":{"code":401,"message":"Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.","status":"UNAUTHENTICATED"}}
+[debug] [2024-02-27T05:25:47.583Z] HTTP Error: 401, Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+[debug] [2024-02-27T05:25:47.684Z] FirebaseError: HTTP Error: 401, Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+    at responseToError (/usr/local/lib/node_modules/firebase-tools/lib/responseToError.js:49:12)
+    at RetryOperation._fn (/usr/local/lib/node_modules/firebase-tools/lib/apiv2.js:285:77)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+[error] 
+[error] Error: Failed to get Firebase project spotifyai-374f6. Please make sure the project exists and your account has permission to access it.
