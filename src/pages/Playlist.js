@@ -18,7 +18,7 @@ const Playlist = () => {
     const fetchRecommendations = async (style = 'Nostalgic Hits') => {
         try {
             setIsLoading(true);
-            const data = await getRecommendations({ style });
+            const data = await getRecommendations(style);
             if (data && data.tracks) {
                 setTracks(data.tracks);
                 setSelectedStyle(style);

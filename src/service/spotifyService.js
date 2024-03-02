@@ -38,10 +38,11 @@ export const getTopTracks = async () => {
   }
 };
 
-export const getRecommendations = async () => {
+export const getRecommendations = async (style = 'Nostalgic Hits') => {
   const getRecommendationsFunction = httpsCallable(getFunctions(), 'getRecommendations');
   try {
-    const result = await getRecommendationsFunction();
+    // Pass the style argument to the Cloud Function
+    const result = await getRecommendationsFunction({ style });
     console.log('Result from getRecommendations Firebase function:', result);
     return result.data;
   } catch (error) {
@@ -49,6 +50,7 @@ export const getRecommendations = async () => {
     throw error;
   }
 };
+
 
 export const getTrackDetails = async (trackId) => {
   const callGetTrackDetails = httpsCallable(getFunctions(), 'getTrackDetails');

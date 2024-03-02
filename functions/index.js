@@ -366,11 +366,16 @@ exports.getTopTracks = functions.https.onCall(async (data, context) => {
 
 // Get recommendations
 const styleAttributes = {
-  Chill: {target_energy: 0.3, target_valence: 0.3, target_tempo: 90},
-  Happy: {target_energy: 0.7, target_valence: 0.8, target_tempo: 120},
-  Energetic: {target_energy: 0.9, target_valence: 0.6, target_tempo: 150},
-  Workout: {target_energy: 0.8, target_valence: 0.5, target_tempo: 160},
-  Sad: {target_energy: 0.2, target_valence: 0.2, target_tempo: 70},
+  "Nostalgic Hits": {
+    target_energy: 0.3, target_valence: 0.3, target_tempo: 90},
+  "Weekend Groove": {
+    target_energy: 0.7, target_valence: 0.8, target_tempo: 120},
+  "Do Not Disturb": {
+    target_energy: 0.9, target_valence: 0.6, target_tempo: 150},
+  "Unwind": {
+    target_energy: 0.8, target_valence: 0.5, target_tempo: 160},
+  "Gem Finder": {
+    target_energy: 0.2, target_valence: 0.2, target_tempo: 70},
 };
 
 exports.getRecommendations = functions.https.onCall(async (data, context) => {
@@ -382,6 +387,7 @@ exports.getRecommendations = functions.https.onCall(async (data, context) => {
 
   // Check for the style parameter, default to 'Chill' if not provided
   const style = data.style || "Chill";
+  console.log("Using style:", style);
 
   // Validate if the provided style is one of the predefined ones
   if (!Object.keys(styleAttributes).includes(style)) {
@@ -400,7 +406,7 @@ exports.getRecommendations = functions.https.onCall(async (data, context) => {
     const randomTopTrackIds = getRandomElements(topTrackIds, 5);
 
     // Retrieve the attributes for the selected style
-    const styleParams = styleAttributes[style];
+    const styleParams = styleAttributes[style]; //
 
     const recommendations = await fetchSpotifyRecommendations(
         accessToken, randomTopTrackIds, {...medians, ...styleParams});
