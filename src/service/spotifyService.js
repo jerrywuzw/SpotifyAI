@@ -51,14 +51,14 @@ export const getRecommendations = async () => {
 };
 
 export const getTrackDetails = async (trackId) => {
-  const functions = getFunctions();
-  const callGetTrackDetails = httpsCallable(functions, 'getTrackDetails');
+  const callGetTrackDetails = httpsCallable(getFunctions(), 'getTrackDetails');
   try {
       const result = await callGetTrackDetails({ trackId });
-      return result.data; // Assuming the function returns track details directly
+      console.log('Result from getTrackDetails Firebase function:', result);
+      return result.data;
   } catch (error) {
       console.error('Error fetching track details:', error);
-      throw error; // Rethrow or handle as needed
+      throw error;
   }
 };
 

@@ -3,15 +3,13 @@ const admin = require("firebase-admin");
 const axios = require("axios");
 const cors = require("cors")({origin: true});
 
-// ==============
-// Initialization
-// ==============
+
+// =============================================================================
+//                      Initialization and Configuration
+// =============================================================================
 admin.initializeApp();
 const db = admin.firestore();
 
-// ===========================
-// Spotify OAuth Configuration
-// ===========================
 const CLIENT_ID = functions.config().spotify.client_id;
 const CLIENT_SECRET = functions.config().spotify.client_secret;
 const REDIRECT_URI = functions.config().spotify.redirect_uri;
@@ -20,9 +18,10 @@ const SPOTIFY_TOP_TRACKS_ENDPOINT = "https://api.spotify.com/v1/me/top/tracks";
 const SPOTIFY_USER_PROFILE_ENDPOINT = "https://api.spotify.com/v1/me";
 const SPOTIFY_RECOMMENDATIONS_ENDPOINT = "https://api.spotify.com/v1/recommendations";
 
-// ================
-// Helper Functions
-// ================
+
+// =============================================================================
+//                              Helper Functions
+// =============================================================================
 /**
  * Helper function to fetch Spotify username.
  * @param {String} accessToken
@@ -298,9 +297,9 @@ function getRandomElements(arr, count) {
 }
 
 
-// ==================
-// Firebase Functions
-// ==================
+// =============================================================================
+//                            Firebase Functions
+// =============================================================================
 // Exchange a Spotify auth code for tokens
 exports.exchangeSpotifyCode = functions.https.onRequest((request, response) => {
   cors(request, response, async () => {
@@ -465,7 +464,7 @@ async function fetchSpotifyTrackDetails(accessToken, trackId) {
         "Authorization": `Bearer ${accessToken}`,
       },
     });
-    return response.data; // The track's details
+    return response.data;
   } catch (error) {
     console.error("Error fetching Spotify track details:", error);
     throw error;
